@@ -32,7 +32,6 @@ namespace WindowsFormsApp1
             this.components = new System.ComponentModel.Container();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.platform = new System.Windows.Forms.PictureBox();
-            this.player = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.platform)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,24 +51,16 @@ namespace WindowsFormsApp1
             this.platform.TabStop = false;
             this.platform.Tag = "platform";
             // 
-            // player
-            // 
-            this.player.Location = new System.Drawing.Point(547, 44);
-            this.player.Name = "player";
-            this.player.Size = new System.Drawing.Size(80, 80);
-            this.player.TabIndex = 2;
-            this.player.Paint += new System.Windows.Forms.PaintEventHandler(this.player_Paint);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.player);
             this.Controls.Add(this.platform);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.platform)).EndInit();
@@ -80,7 +71,6 @@ namespace WindowsFormsApp1
         #endregion
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.PictureBox platform;
-        private System.Windows.Forms.Panel player;
     }
 }
 

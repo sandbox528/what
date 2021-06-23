@@ -24,26 +24,28 @@ namespace WindowsFormsApp1
         double xPos, yPos = 0;
         double angle = 0;
 
+        RectangleF hitbox = new RectangleF(0, 0, 100, 100);
+
         int margin = 2;
         int score = 0;
 
         Bitmap face = Resources.face;
+        Bitmap gun = Resources.gun;
         public Form1()
         {
 
             InitializeComponent();
-            typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty
-           | BindingFlags.Instance | BindingFlags.NonPublic, null,
-           player, new object[] { true });
             
 
         }
         private void Form1_Load(object sender, EventArgs e)
         {
             this.DoubleBuffered = true;
-            face = ResizeImage(face, player.Width-margin*2, player.Height-margin*2);
-            xPos = player.Left;
-            yPos = player.Top;
+            face = ResizeImage(face, (int) hitbox.Width, (int) hitbox.Height);
+            gun = ResizeImage(gun, 150, 50);
+  
+
+            
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -51,10 +53,11 @@ namespace WindowsFormsApp1
             angle += xVel*1.5;
             angle %= 360;
 
-            yPos += yVel;
-            xPos += xVel;
-            player.Left = (int)xPos;
-            player.Top = (int)yPos;
+            hitbox.X +=  (float) xVel;
+            hitbox.Y +=  (float) yVel;
+
+
+            
             if (onGround)
                 xVel *= 0.9;
             yVel += 1;
@@ -64,36 +67,18 @@ namespace WindowsFormsApp1
             if (goRight && xVel < 5)
                 xVel += 1;
 
-            
-
-            foreach (Control x in this.Controls)
+            if (hitbox.IntersectsWith(platform.Bounds))
             {
-                System.Console.WriteLine(x.Tag);
-                if (x is PictureBox && x.Tag == "platform")
-                                    {
-                    if (player.Bounds.IntersectsWith(x.Bounds))
-                    {
-                        onGround = true;
-                        yVel = 0;
-                        yPos = x.Top - player.Height;
-                        player.Top = (int)yPos;
-                    }
-                }
+                onGround = true;
+                yVel = 0;
+                hitbox.Y = platform.Top - hitbox.Height;
             }
-            player.Invalidate();
+
+            this.Invalidate();
         }
 
 
-        private void player_Paint(object sender, PaintEventArgs e)
-        {
-            
-            Graphics gfx = e.Graphics;
-            Matrix rotation = new Matrix();
-            rotation.RotateAt((float)angle, new Point(player.Width/2, player.Height/2));
-            gfx.Transform = rotation;
-            gfx.DrawImage(face, margin, margin);
 
-        }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -113,6 +98,16 @@ namespace WindowsFormsApp1
                         onGround = false;
                     break;
             }
+        }
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics gfx = e.Graphics;
+            Matrix rotation = new Matrix();
+            
+            rotation.RotateAt((float)angle, new PointF(hitbox.X + hitbox.Width / 2, hitbox.Y +  hitbox.Height / 2));
+            gfx.Transform = rotation;
+            gfx.DrawImage(face, hitbox.X, hitbox.Y);
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
