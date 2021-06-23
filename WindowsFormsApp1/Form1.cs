@@ -102,10 +102,24 @@ namespace WindowsFormsApp1
         {
             Graphics gfx = e.Graphics;
             Matrix rotation = new Matrix();
-            
-            rotation.RotateAt((float)angle, new PointF(hitbox.X + hitbox.Width / 2, hitbox.Y +  hitbox.Height / 2));
+            PointF center = new PointF(hitbox.X + hitbox.Width/2,hitbox.Y + hitbox.Height/2);
+
+            rotation.RotateAt((float)angle, center);
             gfx.Transform = rotation;
             gfx.DrawImage(face, hitbox.X, hitbox.Y);
+
+            gfx.ResetTransform();
+
+            
+            Point cursorPoint = this.PointToClient(Cursor.Position);
+            double gunAngle = Math.Atan2(cursorPoint.Y-center.Y, cursorPoint.X - center.X) * 180.0 / Math.PI;
+
+            rotation = new Matrix();
+            rotation.RotateAt((float)gunAngle, center);
+            gfx.Transform = rotation;
+
+            gfx.DrawImage(gun, center.X + 50, center.Y - gun.Height/2);
+
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
