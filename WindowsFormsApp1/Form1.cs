@@ -21,12 +21,10 @@ namespace WindowsFormsApp1
         bool goLeft = false;
         bool goRight = false;
         double xVel, yVel = 0;
-        double xPos, yPos = 0;
         double angle = 0;
 
         RectangleF hitbox = new RectangleF(0, 0, 100, 100);
 
-        int margin = 2;
         int score = 0;
 
         Bitmap face = Resources.face;
