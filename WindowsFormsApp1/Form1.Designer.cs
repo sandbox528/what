@@ -30,24 +30,11 @@ namespace WindowsFormsApp1
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.player = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.platform = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.player)).BeginInit();
+            this.player = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.platform)).BeginInit();
             this.SuspendLayout();
-            // 
-            // player
-            // 
-            this.player.BackColor = System.Drawing.Color.Transparent;
-            this.player.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("player.BackgroundImage")));
-            this.player.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.player.Location = new System.Drawing.Point(516, 44);
-            this.player.Name = "player";
-            this.player.Size = new System.Drawing.Size(63, 68);
-            this.player.TabIndex = 0;
-            this.player.TabStop = false;
             // 
             // timer1
             // 
@@ -65,28 +52,35 @@ namespace WindowsFormsApp1
             this.platform.TabStop = false;
             this.platform.Tag = "platform";
             // 
+            // player
+            // 
+            this.player.Location = new System.Drawing.Point(547, 44);
+            this.player.Name = "player";
+            this.player.Size = new System.Drawing.Size(80, 80);
+            this.player.TabIndex = 2;
+            this.player.Paint += new System.Windows.Forms.PaintEventHandler(this.player_Paint);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.platform);
             this.Controls.Add(this.player);
+            this.Controls.Add(this.platform);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
-            ((System.ComponentModel.ISupportInitialize)(this.player)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.platform)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox player;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.PictureBox platform;
+        private System.Windows.Forms.Panel player;
     }
 }
 

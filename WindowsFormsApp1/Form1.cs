@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsApp1.Properties;
+
 
 namespace WindowsFormsApp1
 {
@@ -17,18 +22,35 @@ namespace WindowsFormsApp1
         bool goRight = false;
         double xVel, yVel = 0;
         double xPos, yPos = 0;
+        double angle = 0;
 
-        int force = 8;
+        int margin = 2;
         int score = 0;
+
+        Bitmap face = Resources.face;
         public Form1()
         {
+
             InitializeComponent();
+            typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty
+           | BindingFlags.Instance | BindingFlags.NonPublic, null,
+           player, new object[] { true });
+            
+
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            this.DoubleBuffered = true;
+            face = ResizeImage(face, player.Width-margin*2, player.Height-margin*2);
             xPos = player.Left;
             yPos = player.Top;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            angle += xVel*1.5;
+            angle %= 360;
+
             yPos += yVel;
             xPos += xVel;
             player.Left = (int)xPos;
@@ -58,12 +80,19 @@ namespace WindowsFormsApp1
                     }
                 }
             }
+            player.Invalidate();
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+
+        private void player_Paint(object sender, PaintEventArgs e)
         {
-            Image imag = player.Image;
-            e.Graphics.DrawImage(imag, new Point(0, 0));
+            
+            Graphics gfx = e.Graphics;
+            Matrix rotation = new Matrix();
+            rotation.RotateAt((float)angle, new Point(player.Width/2, player.Height/2));
+            gfx.Transform = rotation;
+            gfx.DrawImage(face, margin, margin);
+
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -100,5 +129,31 @@ namespace WindowsFormsApp1
                     break;
             }
         }
+
+        public static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
+        }
     }
+
 }
